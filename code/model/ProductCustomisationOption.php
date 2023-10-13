@@ -3,7 +3,7 @@
 class ProductCustomisationOption extends DataObject
 {
     private static $db = array(
-        'Title'         => 'Varchar',
+        'Title'         => 'Varchar(255)',
         'ModifyPrice'   => 'Decimal',
         'Sort'          => 'Int',
         'Default'       => 'Boolean'

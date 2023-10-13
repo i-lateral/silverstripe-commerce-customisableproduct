@@ -3,9 +3,9 @@
 class ProductCustomisation extends DataObject
 {
     private static $db = array(
-        'Title'     => 'Varchar',
+        'Title'     => 'Varchar(255)',
         'Required'  => 'Boolean',
-        'DisplayAs' => "Enum('Dropdown,Radio,Checkboxes,TextEntry','Dropdown')",
+        'DisplayAs' => "Enum('Dropdown,Radio,Checkbox,Checkboxes,TextEntry','Dropdown')",
         'MaxLength' => "Int",
         'Sort'      => 'Int'
     );
@@ -26,6 +26,17 @@ class ProductCustomisation extends DataObject
 
     private static $default_sort = "\"Sort\" ASC";
 
+    public function isMultiOption()
+    {
+        if ($this->DisplayAs == "TextEntry"
+            || $this->DisplayAs == "Checkbox"
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
@@ -35,9 +46,7 @@ class ProductCustomisation extends DataObject
         $fields->removeByName('Sort');
         $fields->removeByName('MaxLength');
 
-        if ($this->ID && $this->DisplayAs != "TextEntry") {
-            $field_types = singleton('ProductCustomisationOption')->getFieldTypes();
-
+        if ($this->ID && $this->isMultiOption() === true) {
             // Deal with product features
             $add_button = new GridFieldAddNewInlineButton('toolbar-header-left');
             $add_button->setTitle('Add Customisation Option');
@@ -103,6 +112,9 @@ class ProductCustomisation extends DataObject
                     break;
                 case 'Radio':
                     $field = OptionSetField::create($name, $title, $options, $default);
+                    break;
+                case 'Checkbox':
+                    $field = CheckboxField::create($name, $title);
                     break;
                 case 'Checkboxes':
                     $field = CheckboxSetField::create($name, $title, $options, $defaults->column('ID'));
