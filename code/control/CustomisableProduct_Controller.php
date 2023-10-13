@@ -119,6 +119,8 @@ class CustomisableProduct_Controller extends Product_Controller
                 $tax_rate = 0;
             }
 
+            $deliverable = (isset($object->Deliverable)) ? $object->Deliverable : true;
+
             $item_to_add = array(
                 "Key" => (int)$data['ID'] . ':' . base64_encode(json_encode($customisations)),
                 "Title" => $object->Title,
@@ -130,7 +132,8 @@ class CustomisableProduct_Controller extends Product_Controller
                 "StockID" => $object->StockID,
                 "ID" => $object->ID,
                 "ClassName" => $object->ClassName,
-                "Stocked" => $object->Stocked
+                "Stocked" => $object->Stocked,
+                "Deliverable" => $deliverable
             );
 
             // Try and add item to cart, return any exceptions raised
