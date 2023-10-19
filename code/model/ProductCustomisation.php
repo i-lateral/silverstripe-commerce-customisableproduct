@@ -5,9 +5,9 @@ class ProductCustomisation extends DataObject
     private static $db = array(
         'Title'       => 'Varchar(255)',
         'Required'    => 'Boolean',
-        'DisplayAs'   => "Enum('Dropdown,Radio,Checkbox,Checkboxes,TextEntry,Heading','Dropdown')",
-        'MaxLength'   => "Int",
-        'HeadingLevel' => "Int",
+        'DisplayAs'   => 'Enum("Dropdown,Radio,Checkbox,Checkboxes,TextEntry,Heading","Dropdown")',
+        'MaxLength'   => 'Int',
+        'HeadingLevel' => 'Int',
         'Sort'        => 'Int'
     );
 
