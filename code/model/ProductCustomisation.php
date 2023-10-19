@@ -3,11 +3,12 @@
 class ProductCustomisation extends DataObject
 {
     private static $db = array(
-        'Title'     => 'Varchar(255)',
-        'Required'  => 'Boolean',
-        'DisplayAs' => "Enum('Dropdown,Radio,Checkbox,Checkboxes,TextEntry','Dropdown')",
-        'MaxLength' => "Int",
-        'Sort'      => 'Int'
+        'Title'       => 'Varchar(255)',
+        'Required'    => 'Boolean',
+        'DisplayAs'   => "Enum('Dropdown,Radio,Checkbox,Checkboxes,TextEntry,Heading','Dropdown')",
+        'MaxLength'   => "Int",
+        'HeadingLevel' => "Int",
+        'Sort'        => 'Int'
     );
 
     private static $has_one = array(
@@ -30,6 +31,7 @@ class ProductCustomisation extends DataObject
     {
         if ($this->DisplayAs == "TextEntry"
             || $this->DisplayAs == "Checkbox"
+            || $this->DisplayAs == 'Heading'
         ) {
             return false;
         }
@@ -74,6 +76,18 @@ class ProductCustomisation extends DataObject
 
         if (!$this->ID) {
             $fields->addFieldToTab('Root.Main', LiteralField::create('CreateWarning', '<p>You need to create this before you can add options</p>'));
+        }
+
+        // If not a text field, hide max length
+        if ($this->DisplayAs !== "TextEntry") {
+            $fields->removeByName('MaxLength');
+        }
+
+        // If not a heading field, hide heading level
+        if ($this->DisplayAs !== "Heading") {
+            $fields->removeByName('HeadingLevel');
+        } else {
+            $fields->removeByName('Required');
         }
 
         $this->extend('updateCMSFields', $fields);
@@ -121,8 +135,14 @@ class ProductCustomisation extends DataObject
                     break;
                 case 'TextEntry':
                     $field = TextField::create($name, $title);
-                    if ($this->MaxLength) {
+                    if ($this->MaxLength > 0) {
                         $field->setMaxLength($this->MaxLength);
+                    }
+                    break;
+                case 'Heading':
+                    $field = HeaderField::create($name, $title);
+                    if ($this->HeadingLevel > 0) {
+                        $field->setHeadingLevel($this->HeadingLevel);
                     }
                     break;
             }
